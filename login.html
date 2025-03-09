@@ -7,12 +7,33 @@
 </head>
 <body>
     <h2>Log In</h2>
-    <!-- Pointing to login.php for login handling -->
-    <form action="https://crypto2525.infy.uk/login.php" method="POST">
-        <input type="text" name="username" placeholder="Username" required><br>
-        <input type="password" name="password" placeholder="Password" required><br>
+    <form id="loginForm">
+        <input type="text" id="username" placeholder="Username" required><br>
+        <input type="password" id="password" placeholder="Password" required><br>
         <button type="submit">Log In</button>
     </form>
     <p>Don't have an account? <a href="signup.html">Sign up</a></p>
+
+    <script>
+        // When the login form is submitted
+        document.getElementById("loginForm").addEventListener("submit", function(e) {
+            e.preventDefault(); // Prevent the form from refreshing the page
+
+            // Get the values from the form
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+
+            // Check if the user exists in localStorage
+            const storedUsername = localStorage.getItem(username);
+            const storedPassword = localStorage.getItem(username + "_password");
+
+            if (storedUsername && storedPassword === password) {
+                alert("Login successful!");
+                window.location.href = "dashboard.html"; // Redirect to dashboard
+            } else {
+                alert("Incorrect username or password.");
+            }
+        });
+    </script>
 </body>
 </html>
