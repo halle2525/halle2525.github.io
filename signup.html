@@ -7,12 +7,29 @@
 </head>
 <body>
     <h2>Sign Up</h2>
-    <form action="https://crypto2525.infy.uk/signup.php" method="POST">
-        <input type="text" name="username" placeholder="Username" required><br>
-        <input type="email" name="email" placeholder="Email" required><br>
-        <input type="password" name="password" placeholder="Password" required><br>
+    <form id="signupForm">
+        <input type="text" id="newUsername" placeholder="Username" required><br>
+        <input type="password" id="newPassword" placeholder="Password" required><br>
         <button type="submit">Sign Up</button>
     </form>
-    <p>Already have an account? <a href="https://halle2525.github.io/login.html">Login</a></p>
+    <p>Already have an account? <a href="login.html">Log in</a></p>
+
+    <script>
+        // When the signup form is submitted
+        document.getElementById("signupForm").addEventListener("submit", function(e) {
+            e.preventDefault(); // Prevent the form from refreshing the page
+
+            // Get the values from the form
+            const newUsername = document.getElementById("newUsername").value;
+            const newPassword = document.getElementById("newPassword").value;
+
+            // Store the username and password in localStorage
+            localStorage.setItem(newUsername, newUsername);
+            localStorage.setItem(newUsername + "_password", newPassword);
+
+            alert("Sign up successful! You can now log in.");
+            window.location.href = "login.html"; // Redirect to login
+        });
+    </script>
 </body>
 </html>
