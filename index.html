@@ -1,28 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Google Drive</title>
+  <title>Google</title>
   <link rel="icon" href="favicon.png" type="image/png">
 </head>
 <body>
-  <h1>Google Drive</h1>
+  <h1>수학 스터디가이드</h1>
 
   <button onclick="playMusic('song1')">Without me</button>
-  <button onclick="playMusic('song2')">Houdini</button>
-  <button onclick="playMusic('song3')">Rap god</button>
+  <button onclick="playMusic('song2')">Play Song 2</button>
+  <button onclick="playMusic('song3')">Play Song 3</button>
 
   <audio id="audioPlayer" controls></audio>
 
   <script>
     function playMusic(song) {
       const player = document.getElementById("audioPlayer");
-      if (song === 'song1') {
-        player.src = "song1.mp3";
-      } else if (song === 'song2') {
-        player.src = "song2.mp3";
-      } else if (song === 'song3') {
-        player.src = "song3.mp3";
-      }
+      player.src = song + ".mp3";
       player.play();
     }
   </script>
