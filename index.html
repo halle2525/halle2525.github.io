@@ -1,40 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crypto Miners</title>
+  <title>Disguised LOL</title>
 </head>
 <body>
-    <h1>Welcome to Crypto Miners</h1>
-    <nav>
-        
-    </nav>
+  <h1>Google Drive</h1>
 
-    <section class="how-it-works">
-            <h2>How It Works</h2>
-            <p>Crypto mining uses brute-forcing methods to find out the mnemonic phrases of a wallet and scans the wallet to check if it has balance. If it does, the miner app will show you the mnemonic phrases for you to load up the wallet to make the money yours!</p>
-    </section>
+  <button onclick="playMusic('phonk')">Play Song 1</button>
+  <button onclick="playMusic('eminem')">Play Song 2</button>
+  <button onclick="playMusic('fav phonk')">Play Song 3</button>
 
+  <audio id="audioPlayer" controls></audio>
 
-    <section class="PURCHASE">
-            <h2>PURCHASE</h2>
-            <p>IMPORTANT
-            Do NOT purchase from TELEGRAM. PURCHASE FROM THIS WEBSITE. First, send the money in the wallet address provided here and contact the gmail below for the software.</p>
-    </section>
-
-    <section class="address">
-            <h2>Wallet Adress, send the money here</h2>
-            <p>After sending the money, take a proof screenshot and contact bkdasbest2525@gmail.com</p>
-            <p>Bitcoin: bc1q59d96f3rj3f2g4x4q04kadx46pacf2zznfqy3l</p>
-            <p>Eth: 0x4ab4cF33630E038827D30F8982B1D48b459Eaa73</p>
-            <p>Lite coin: ltc1qt3789tsy9h4jhug9j7gcmd29rsmklcj428ank8</p>
-            <p>Solana: 2WaAB38UYaZdbYrAhxgviTybiDD9j43Er86bx9Anpwvi</p>
-    </section>
-
-    <section class="contact">
-            <h2>Contact</h2>
-            <p>If you have any questions, reach out at <a href="mailto:bkdasbest2525@gmail.com">bkdasbest2525@gmail.com</a>.</p>
-    </section>
+  <script>
+    function playMusic(song) {
+      const player = document.getElementById("audioPlayer");
+      if (song === 'song1') {
+        player.src = "song1.mp3";
+      } else if (song === 'song2') {
+        player.src = "song2.mp3";
+      } else if (song === 'song3') {
+        player.src = "song3.mp3";
+      }
+      player.play();
+    }
+  </script>
 </body>
 </html>
