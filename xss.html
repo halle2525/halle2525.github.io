@@ -1,1 +1,30 @@
 
+<!DOCTYPE html>
+<html>
+<head>
+  <title>XSS Lab</title>
+</head>
+<body>
+
+  <h1>XSS Test Site</h1>
+  <form method="GET">
+    <label>Enter something:</label><br>
+    <input type="text" name="input" />
+    <input type="submit" value="Submit" />
+  </form>
+
+  <p>You entered: <span id="output"></span></p>
+
+  <script>
+    // Grab input from URL
+    const params = new URLSearchParams(window.location.search);
+    const input = params.get("input");
+    
+    // Insert directly into the page (bad practice – this is the point!)
+    if (input) {
+      document.getElementById("output").innerHTML = input;
+    }
+  </script>
+
+</body>
+</html>
