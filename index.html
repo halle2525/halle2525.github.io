@@ -84,14 +84,15 @@
   <p><strong>ISP:</strong> <span id="isp"></span></p>
 
   <script>
-    fetch("https://ipapi.co/json/")
+    fetch("https://ipinfo.io/json?token=36f1d4e7ef642c") // free token
       .then(response => response.json())
       .then(data => {
         document.getElementById("ip").textContent = data.ip;
         document.getElementById("city").textContent = data.city;
-        document.getElementById("country").textContent = data.country_name;
+        document.getElementById("country").textContent = data.country;
         document.getElementById("isp").textContent = data.org;
       });
+  </script>
 
 
 
