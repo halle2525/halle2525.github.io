@@ -1,30 +1,19 @@
-
 <!DOCTYPE html>
 <html>
 <head>
-  <title>XSS Lab</title>
+  <title>Reflected XSS Test</title>
 </head>
 <body>
-
-  <h1>XSS Test Site</h1>
-  <form method="GET">
-    <label>Enter something:</label><br>
-    <input type="text" name="input" />
-    <input type="submit" value="Submit" />
-  </form>
-
-  <p>You entered: <span id="output"></span></p>
+  <h2>XSS Playground</h2>
+  <p>You searched for: <span id="output"></span></p>
 
   <script>
-    // Grab input from URL
-    const params = new URLSearchParams(window.location.search);
-    const input = params.get("input");
-    
-    // Insert directly into the page (bad practice – this is the point!)
+    const urlParams = new URLSearchParams(window.location.search);
+    const input = urlParams.get('input');
     if (input) {
-      document.getElementById("output").innerHTML = input;
+      // 👇 This is where the XSS happens
+      document.getElementById('output').innerHTML = input;
     }
   </script>
-
 </body>
 </html>
