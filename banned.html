@@ -1,8 +1,28 @@
 <!DOCTYPE html>
 <html>
-<head><title>Banned</title></head>
+<head>
+  <title>Banned</title>
+  <script>
+  const user = localStorage.getItem("loggedInUser");
+  const banKey = "ban_" + user;
+  const ban = JSON.parse(localStorage.getItem(banKey));
+
+  if (ban) {
+    if (Date.now() >= ban.until) {
+      // Ban expired, send back to login or homepage
+      localStorage.removeItem(banKey);
+      window.location.href = "login.html";
+    } else {
+      const daysLeft = Math.ceil((ban.until - Date.now()) / 86400000);
+      document.getElementById("banInfo").innerText =
+        `Reason: ${ban.reason}\nDays left: ${daysLeft}`;
+    }
+  }
+</script>
+
+</head>
 <body>
-  <h1>You are banned!</h1>
+  <h1>You are BANNED!</h1>
   <p id="banInfo"></p>
 
   <script>
