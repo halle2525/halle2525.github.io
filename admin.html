@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head><title>Admin Dashboard</title></head>
+<body>
+  <h2>Admin View</h2>
+  <div id="userList"></div>
+
+  <script>
+    let html = "<ul>";
+    for (let key in localStorage) {
+      if (key.startsWith("user_")) {
+        html += "<li>" + key.replace("user_", "") + "</li>";
+      }
+    }
+    html += "</ul>";
+    document.getElementById("userList").innerHTML = html;
+  </script>
+</body>
+</html>
