@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html>
-<head><title>Admin Dashboard</title></head>
+<head>
+  <title>Admin Dashboard</title>
+  <script>
+  if (localStorage.getItem("isAdmin") !== "true") {
+    window.location.href = "admin_login.html";
+  }
+</script>
+
+</head>
 <body>
   <h2>Admin View</h2>
   <div id="userList"></div>
