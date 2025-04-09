@@ -11,6 +11,7 @@
 </head>
 <body>
   <h2>Admin View</h2>
+  <button onclick="logout()">Logout</button>
   <div id="userList"></div>
 
   <script>
@@ -22,6 +23,11 @@
     }
     html += "</ul>";
     document.getElementById("userList").innerHTML = html;
+
+    function logout() {
+      localStorage.removeItem("isAdmin");
+      window.location.href = "admin_login.html";
+    }
   </script>
 </body>
 </html>
