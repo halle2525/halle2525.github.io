@@ -1,5 +1,23 @@
-<form action="register.php" method="POST">
-  <input name="username" placeholder="Username" required>
-  <input name="password" type="password" placeholder="Password" required>
-  <button type="submit">Register</button>
-</form>
+<!DOCTYPE html>
+<html>
+<head><title>Register</title></head>
+<body>
+  <h2>Register</h2>
+  <input id="reg_user" placeholder="Username"><br>
+  <input id="reg_pass" type="password" placeholder="Password"><br>
+  <button onclick="register()">Register</button>
+  <p><a href="login.html">Login instead</a></p>
+
+  <script>
+    function register() {
+      const user = document.getElementById("reg_user").value;
+      const pass = document.getElementById("reg_pass").value;
+      if (user && pass) {
+        localStorage.setItem("user_" + user, pass);
+        alert("Registered! Now login.");
+        window.location.href = "login.html";
+      }
+    }
+  </script>
+</body>
+</html>
