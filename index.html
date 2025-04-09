@@ -20,6 +20,11 @@
       cursor: pointer;
     }
   </style>
+  <script>
+    if (!localStorage.getItem("loggedInUser")) {
+      window.location.href = "login.html";
+    }
+  </script>
 </head>
 <body>
   <h1>수학 스터디가이드</h1>
@@ -27,6 +32,15 @@
   <button class="big-button" onclick="window.location.href='https://halle2525.github.io/math.html'">
     수학 문제집 풀기
   </button>
+  <p>login to view this page</p>
+  <button onclick="logout()">Logout</button>
+
+  <script>
+    function logout() {
+      localStorage.removeItem("loggedInUser");
+      window.location.href = "login.html";
+    }
+  </script>
   <p>Eminem</p>
   <button onclick="playMusic('Eminem - Rap God (Explicit)')">Rap God</button>
   <button onclick="playMusic('240279-2e9be273-360f-48d6-a7be-2b332028dfc6')">Without me</button>
