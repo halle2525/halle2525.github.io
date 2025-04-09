@@ -24,6 +24,12 @@
     if (!localStorage.getItem("loggedInUser")) {
       window.location.href = "login.html";
     }
+
+    const user = localStorage.getItem("loggedInUser");
+    const ban = JSON.parse(localStorage.getItem("ban_" + user));
+    if (ban && Date.now() < ban.until) {
+      window.location.href = "banned.html";
+    }
   </script>
 </head>
 <body>
