@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head><title>Login</title></head>
+<body>
+  <h2>Login</h2>
+  <input id="login_user" placeholder="Username"><br>
+  <input id="login_pass" type="password" placeholder="Password"><br>
+  <button onclick="login()">Login</button>
+  <p><a href="register.html">Register</a></p>
+
+  <script>
+    function login() {
+      const user = document.getElementById("login_user").value;
+      const pass = document.getElementById("login_pass").value;
+      if (localStorage.getItem("user_" + user) === pass) {
+        localStorage.setItem("loggedInUser", user);
+        window.location.href = "index.html";
+      } else {
+        alert("Invalid login");
+      }
+    }
+  </script>
+</body>
+</html>
