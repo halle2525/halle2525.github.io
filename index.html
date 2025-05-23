@@ -20,25 +20,6 @@
       cursor: pointer;
     }
   </style>
-  <script>
-    if (!localStorage.getItem("loggedInUser")) {
-    window.location.href = "login.html";
-  }
-
-  const user = localStorage.getItem("loggedInUser");
-  const banKey = "ban_" + user;
-  const ban = JSON.parse(localStorage.getItem(banKey));
-
-  if (ban) {
-    if (Date.now() < ban.until) {
-      // still banned
-      window.location.href = "banned.html";
-    } else {
-      // ban expired, remove it
-      localStorage.removeItem(banKey);
-    }
-  }
-  </script>
 </head>
 <body>
   <h1>수학 스터디가이드</h1>
@@ -94,6 +75,7 @@
   <button onclick="playMusic('Central Cee - Doja (Official Music Video)')">Doja</button>
   <button onclick="playMusic('Central Cee - BAND4BAND (Lyrics) Ft. Lil Baby')">Band4Band</button>
   <button onclick="playMusic('Not Like Us - (Raag.Fm)')">They not like us</button>
+  <button onclick="playMusic('2Pac, Pop Smoke - Write This Down ft. Biggie, DMX, Eazy E, Ice Cube, Dr Dre, NWA, Nipsey, Snoop Dogg')">Write this down</button>
   
   <p>Normal songs</p>
   <button onclick="playMusic('ODETARI - KEEP UP (Lyrics)')">KEEP UP</button>
