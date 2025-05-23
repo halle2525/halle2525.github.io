@@ -20,8 +20,19 @@
       cursor: pointer;
     }
   </style>
+  <script>
+    const correctPassword = "kyjyj0321"; // change this to your password
+
+    function checkPassword() {
+      const userInput = prompt("Enter the password:");
+      if (userInput !== correctPassword) {
+        alert("Wrong password!");
+        window.location.href = "https://www.google.com"; // or block access
+      }
+    }
+  </script>
 </head>
-<body>
+<body onload="checkPassword()">
   <h1>수학 문제집</h1>
 
   <button class="big-button" onclick="window.location.href='https://halle2525.github.io/math.html'">
