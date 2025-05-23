@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>수학 문제집 - Google Drive</title>
+  <link rel="icon" href="google_drive_new_logo_icon_159136.png" type="image/png">
+  <style>
+    body {
+      background-color: white;
+      color: black;
+      font-family: Arial, sans-serif;
+      padding: 25px;
+    }
+    .big-button {
+      padding: 20px 40px;
+      font-size: 28px;
+      background-color: green;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>수학 문제집</h1>
+
+  <button class="big-button" onclick="window.location.href='https://halle2525.github.io/math.html'">
+    수학 문제집 풀기
+  </button>
+  <p>hmm/p>
+  <button onclick="playMusic('Eminem - Rap God (Explicit)')">Rap God</button>
+  <button onclick="playMusic('240279-2e9be273-360f-48d6-a7be-2b332028dfc6')">Without me</button>
+  <button onclick="playMusic('Eminem - Mockingbird [Official Music Video]')">Mockingbird</button>
+  <button onclick="playMusic('Eminem - Godzilla ft. Juice WRLD (Official Music Video)')">Godzilla</button>
+  <button onclick="playMusic('Eminem - Houdini [Official Music Video]')">Houdini</button>
+  <button onclick="playMusic('Eminem - Lose Yourself (Lyrics)')">Lose yourself</button>
+  
+
+
+  
+
+  <p>View on GitHub</p>
+  <a href="https://github.com/halle2525/halle2525.github.io" target="_blank">
+    <button>HTML Source Code</button>
+  </a>
+
+
+  
+
+
+  <audio id="audioPlayer" controls></audio>
+
+  <script>
+    function playMusic(song) {
+      const player = document.getElementById("audioPlayer");
+      player.src = song + ".mp3";
+      player.play();
+    }
+  </script>
+</body>
+</html>
