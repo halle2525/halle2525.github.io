@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Bass God Visualizer</title>
+  <title>Bass Visualizer</title>
   <style>
     body {
       margin: 0;
@@ -46,14 +46,15 @@
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // BASS INTENSITY
+    // Lower sensitivity: use fewer bins, subtract base noise level
     let bass = 0;
-    for (let i = 0; i < 10; i++) bass += dataArray[i];
-    bass = bass / 10;
+    for (let i = 0; i < 6; i++) bass += dataArray[i];
+    bass = bass / 6 - 30; // subtract ambient level
+    if (bass < 0) bass = 0;
 
     const radius = 120;
     const spikes = 60;
-    const outerRadius = radius + bass * 1.8;
+    const outerRadius = radius + bass * 1.5;
     const innerRadius = radius;
 
     // Star glow pulse
@@ -80,11 +81,11 @@
     ctx.fillStyle = "#000";
     ctx.fill();
 
-    // Optional: Add text
+    // Text
     ctx.fillStyle = "#fff";
     ctx.font = "20px Arial";
     ctx.textAlign = "center";
-    ctx.fillText("BASS BOOSTED", centerX, centerY + 7);
+    ctx.fillText("BASS GOD", centerX, centerY + 7);
   }
 
   audio.onplay = () => audioCtx.resume();
