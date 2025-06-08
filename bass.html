@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bass Visualizer</title>
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    canvas {
+      border-radius: 50%;
+      background: radial-gradient(circle, #ff00ff, transparent);
+    }
+  </style>
+</head>
+<body>
+  <canvas id="visualizer" width="300" height="300"></canvas>
+  <audio id="audio" src="your-bass-music.mp3" controls autoplay></audio>
+
+  <script>
+    const canvas = document.getElementById("visualizer");
+    const ctx = canvas.getContext("2d");
+    const audio = document.getElementById("audio");
+
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const analyser = audioCtx.createAnalyser();
+    const source = audioCtx.createMediaElementSource(audio);
+    source.connect(analyser);
+    analyser.connect(audioCtx.destination);
+
+    analyser.fftSize = 256;
+    const bufferLength = analyser.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
+
+    function draw() {
+      requestAnimationFrame(draw);
+      analyser.getByteFrequencyData(dataArray);
+      const bass = dataArray[1];
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.beginPath();
+      ctx.arc(150, 150, 50 + bass / 2, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255, 0, 255, 0.6)`;
+      ctx.fill();
+    }
+
+    draw();
+  </script>
+</body>
+</html>
