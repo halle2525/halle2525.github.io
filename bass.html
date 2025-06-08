@@ -49,7 +49,7 @@
     // Lower sensitivity: use fewer bins, subtract base noise level
     let bass = 0;
     for (let i = 0; i < 6; i++) bass += dataArray[i];
-    bass = bass / 6 - 30; // subtract ambient level
+    bass = bass / 6 - 60; // subtract ambient level
     if (bass < 0) bass = 0;
 
     const radius = 120;
