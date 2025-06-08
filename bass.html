@@ -13,14 +13,14 @@
       height: 100vh;
     }
     canvas {
+      background: radial-gradient(circle, #ff00ff88, transparent);
       border-radius: 50%;
-      background: radial-gradient(circle, #ff00ff, transparent);
     }
   </style>
 </head>
 <body>
   <canvas id="visualizer" width="300" height="300"></canvas>
-  <audio id="audio" src="Ariis - FUNK DO BOUNCE [Brazilian Funk].mp3" controls autoplay></audio>
+  <audio id="audio" src="your-bass-music.mp3" controls autoplay></audio>
 
   <script>
     const canvas = document.getElementById("visualizer");
@@ -33,19 +33,25 @@
     source.connect(analyser);
     analyser.connect(audioCtx.destination);
 
-    analyser.fftSize = 256;
+    analyser.fftSize = 128;
     const bufferLength = analyser.frequencyBinCount;
     const dataArray = new Uint8Array(bufferLength);
 
     function draw() {
       requestAnimationFrame(draw);
       analyser.getByteFrequencyData(dataArray);
-      const bass = dataArray[1];
+
+      // Get bass range average (lower frequencies = bass)
+      let bass = 0;
+      for (let i = 0; i < 10; i++) bass += dataArray[i];
+      bass = bass / 10;
+
+      const radius = 50 + bass * 1.5; // stronger bounce
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.beginPath();
-      ctx.arc(150, 150, 50 + bass / 2, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(255, 0, 255, 0.6)`;
+      ctx.arc(150, 150, radius, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255, 0, 255, 0.7)`;
       ctx.fill();
     }
 
