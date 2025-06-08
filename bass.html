@@ -2,30 +2,28 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Bass Visualizer</title>
+  <title>Bass God Visualizer</title>
   <style>
     body {
       margin: 0;
       background: black;
+      overflow: hidden;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
     }
-
     canvas {
-      border-radius: 50%;
-      background: radial-gradient(circle, #ff00ff66, transparent 70%);
+      background: transparent;
     }
   </style>
 </head>
 <body>
-
-<canvas id="visualizer" width="400" height="400"></canvas>
+<canvas id="canvas" width="600" height="600"></canvas>
 <audio id="audio" src="Ariis - FUNK DO BOUNCE [Brazilian Funk].mp3" controls autoplay></audio>
 
 <script>
-  const canvas = document.getElementById("visualizer");
+  const canvas = document.getElementById("canvas");
   const ctx = canvas.getContext("2d");
   const audio = document.getElementById("audio");
 
@@ -35,33 +33,62 @@
   source.connect(analyser);
   analyser.connect(audioCtx.destination);
 
-  analyser.fftSize = 64; // lower size = more bass detail
+  analyser.fftSize = 128;
   const bufferLength = analyser.frequencyBinCount;
   const dataArray = new Uint8Array(bufferLength);
+
+  const centerX = canvas.width / 2;
+  const centerY = canvas.height / 2;
 
   function draw() {
     requestAnimationFrame(draw);
     analyser.getByteFrequencyData(dataArray);
 
-    // Stronger bass response (average of first few bins)
-    let bass = 0;
-    for (let i = 0; i < 6; i++) bass += dataArray[i];
-    bass = bass / 6;
-
-    const radius = 100 + bass * 2.5;
-
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // BASS INTENSITY
+    let bass = 0;
+    for (let i = 0; i < 10; i++) bass += dataArray[i];
+    bass = bass / 10;
+
+    const radius = 120;
+    const spikes = 60;
+    const outerRadius = radius + bass * 1.8;
+    const innerRadius = radius;
+
+    // Star glow pulse
+    ctx.save();
+    ctx.translate(centerX, centerY);
     ctx.beginPath();
-    ctx.arc(200, 200, radius, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(255, 0, 255, 0.8)`;
-    ctx.shadowBlur = 80;
-    ctx.shadowColor = '#ff00ff';
+    for (let i = 0; i < spikes; i++) {
+      const angle = (i / spikes) * Math.PI * 2;
+      const r = i % 2 === 0 ? outerRadius : innerRadius;
+      const x = Math.cos(angle) * r;
+      const y = Math.sin(angle) * r;
+      ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+    ctx.shadowBlur = 60;
+    ctx.shadowColor = "#ff00ff";
+    ctx.fillStyle = "rgba(255, 0, 255, 0.6)";
     ctx.fill();
+    ctx.restore();
+
+    // Inner circle (logo placeholder)
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, 60, 0, Math.PI * 2);
+    ctx.fillStyle = "#000";
+    ctx.fill();
+
+    // Optional: Add text
+    ctx.fillStyle = "#fff";
+    ctx.font = "20px Arial";
+    ctx.textAlign = "center";
+    ctx.fillText("BASS BOOSTED", centerX, centerY + 7);
   }
 
-  audio.onplay = () => audioCtx.resume(); // fix autoplay issues
+  audio.onplay = () => audioCtx.resume();
   draw();
 </script>
-
 </body>
 </html>
