@@ -1,61 +1,67 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Bass Visualizer</title>
   <style>
     body {
       margin: 0;
       background: black;
-      overflow: hidden;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
     }
+
     canvas {
-      background: radial-gradient(circle, #ff00ff88, transparent);
       border-radius: 50%;
+      background: radial-gradient(circle, #ff00ff66, transparent 70%);
     }
   </style>
 </head>
 <body>
-  <canvas id="visualizer" width="300" height="300"></canvas>
-  <audio id="audio" src="Ariis - FUNK DO BOUNCE [Brazilian Funk].mp3" controls autoplay></audio>
 
-  <script>
-    const canvas = document.getElementById("visualizer");
-    const ctx = canvas.getContext("2d");
-    const audio = document.getElementById("audio");
+<canvas id="visualizer" width="400" height="400"></canvas>
+<audio id="audio" src="Ariis - FUNK DO BOUNCE [Brazilian Funk].mp3" controls autoplay></audio>
 
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const analyser = audioCtx.createAnalyser();
-    const source = audioCtx.createMediaElementSource(audio);
-    source.connect(analyser);
-    analyser.connect(audioCtx.destination);
+<script>
+  const canvas = document.getElementById("visualizer");
+  const ctx = canvas.getContext("2d");
+  const audio = document.getElementById("audio");
 
-    analyser.fftSize = 128;
-    const bufferLength = analyser.frequencyBinCount;
-    const dataArray = new Uint8Array(bufferLength);
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  const analyser = audioCtx.createAnalyser();
+  const source = audioCtx.createMediaElementSource(audio);
+  source.connect(analyser);
+  analyser.connect(audioCtx.destination);
 
-    function draw() {
-      requestAnimationFrame(draw);
-      analyser.getByteFrequencyData(dataArray);
+  analyser.fftSize = 64; // lower size = more bass detail
+  const bufferLength = analyser.frequencyBinCount;
+  const dataArray = new Uint8Array(bufferLength);
 
-      // Get bass range average (lower frequencies = bass)
-      let bass = 0;
-      for (let i = 0; i < 10; i++) bass += dataArray[i];
-      bass = bass / 10;
+  function draw() {
+    requestAnimationFrame(draw);
+    analyser.getByteFrequencyData(dataArray);
 
-      const radius = 50 + bass * 1.5; // stronger bounce
+    // Stronger bass response (average of first few bins)
+    let bass = 0;
+    for (let i = 0; i < 6; i++) bass += dataArray[i];
+    bass = bass / 6;
 
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.beginPath();
-      ctx.arc(150, 150, radius, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(255, 0, 255, 0.7)`;
-      ctx.fill();
-    }
+    const radius = 100 + bass * 2.5;
 
-    draw();
-  </script>
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.beginPath();
+    ctx.arc(200, 200, radius, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255, 0, 255, 0.8)`;
+    ctx.shadowBlur = 80;
+    ctx.shadowColor = '#ff00ff';
+    ctx.fill();
+  }
+
+  audio.onplay = () => audioCtx.resume(); // fix autoplay issues
+  draw();
+</script>
+
 </body>
 </html>
