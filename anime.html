@@ -1,124 +1,88 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
-  <title>기말고사 예상문제집 - Google Drive</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>기말고사 예상문제집 - Anime & Study</title>
   <link rel="icon" href="google_drive_new_logo_icon_159136.png" type="image/png">
   <style>
-    body {
-      background-color: white;
-      color: black;
-      font-family: Arial, sans-serif;
-      padding: 25px;
-    }
-    .big-button {
-      padding: 20px 40px;
-      font-size: 28px;
-      background-color: green;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-    }
-    .pink {
-      padding: 20px 40px;
-      font-size: 28px;
-      background-color: pink;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-    }
-    .blue {
-      padding: 20px 40px;
-      font-size: 28px;
-      background-color: blue;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-    }
-    .oran {
-      padding: 20px 40px;
-      font-size: 28px;
-      background-color: orange;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-    }
+    /* Reset 기본 스타일 */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { display: grid; grid-template-rows: auto 1fr auto; grid-template-columns: 240px 1fr; height: 100vh; font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #121212; color: #ffffff; }
+    /* 사이드바 */
+    nav { grid-row: 1 / span 3; grid-column: 1 / 2; background-color: #000; padding: 20px; display: flex; flex-direction: column; }
+    nav h2 { font-size: 1.4rem; margin-bottom: 1.5rem; color: #1DB954; }
+    nav .nav-group { margin-bottom: 2rem; }
+    nav .nav-group p { font-size: 0.75rem; text-transform: uppercase; color: #b3b3b3; margin-bottom: 0.5rem; }
+    nav .nav-group button { width: 100%; padding: 8px; margin-bottom: 6px; background: none; border: none; text-align: left; color: #b3b3b3; border-radius: 4px; cursor: pointer; transition: background 0.2s; }
+    nav .nav-group button:hover { background: rgba(255,255,255,0.1); color: #fff; }
+    /* 헤더 */
+    header { grid-column: 2 / -1; grid-row: 1 / 2; padding: 20px 30px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #282828; }
+    header h1 { font-size: 1.75rem; }
+    /* 메인 영역 */
+    main { grid-column: 2 / -1; grid-row: 2 / 3; overflow-y: auto; padding: 20px 30px; }
+    main section { margin-bottom: 2rem; }
+    main section h3 { font-size: 1.2rem; margin-bottom: 1rem; border-bottom: 1px solid #282828; padding-bottom: 6px; }
+    main section .btn-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); grid-gap: 12px; }
+    main section button { background-color: #181818; border: none; padding: 12px; border-radius: 6px; color: #b3b3b3; text-align: center; cursor: pointer; transition: background 0.2s; }
+    main section button:hover { background-color: #282828; color: #fff; }
+    main section a button { width: 100%; }
+    /* 푸터 플레이어 */
+    footer { grid-column: 2 / -1; grid-row: 3 / -1; padding: 10px 30px; background-color: #000; border-top: 1px solid #282828; display: flex; align-items: center; justify-content: space-between; }
+    footer audio { width: 100%; }
   </style>
   <script>
-    const correctPassword = "sigma"; // change this to your password
-
+    const correctPassword = "sigma";
     function checkPassword() {
-      const userInput = prompt("Enter the password:");
-      if (userInput !== correctPassword) {
+      const input = prompt("Enter the password:");
+      if (input !== correctPassword) {
         alert("Wrong password!");
-        window.location.href = "https://www.google.com"; // or block access
+        window.location.href = "https://www.google.com";
       }
     }
-  </script>
-  <script>
-    document.addEventListener('keydown', function(event) {
-      if (event.code === 'Space') {
-        window.location.href = 'https://halle2525.github.io/science.html';
-      }
-    });
-  </script>
-</head>
-<body onload="checkPassword()">
-  
-  <h1>기말고사 예상문제집</h1>
-
-  <button class="big-button" onclick="window.location.href='https://halle2525.github.io/math.html'">
-    수학 문제집 풀기
-  </button>
-  <p> Math </p>
-  <button class="pink" onclick="window.location.href='https://halle2525.github.io/english.html'">
-    영어 문제집 풀기
-  </button>
-  <p>English</p>
-  <button class="blue" onclick="window.location.href='https://halle2525.github.io/science.html'">
-    과학 문제집 풀기
-  </button>
-  <p>Science</p>
-  <button class="oran" onclick="window.location.href='https://halle2525.github.io/prac.html'">
-    문법 문제집 풀기
-  </button>
-  <p>Practical English<p/>
-  <a href="index.html" target="_blank">
-    <button>Back to index.html</button>
-  </a>
-
-
-    
-  <p>hmm</p>
-  <button onclick="playMusic('DECO27 - モニタリング feat. 初音ミク')">DECO27 モニタリング</button>
-  <button onclick="playMusic('Miku by Anamanaguchi (Lyrics Video)')">Miku</button>
-  <button onclick="playMusic('ぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬみ')">Mimukawa Nice Try</button>
-  
-  
-
-
-  
-
-  <p>View on GitHub</p>
-  <a href="https://github.com/halle2525/halle2525.github.io" target="_blank">
-    <button>HTML Source Code</button>
-  </a>
-
-
-  
-
-
-  <audio id="audioPlayer" controls></audio>
-
-  <script>
+    document.addEventListener('keydown', e => { if (e.code === 'Space') window.location.href = 'https://halle2525.github.io/science.html'; });
     function playMusic(song) {
-      const player = document.getElementById("audioPlayer");
-      player.src = song + ".mp3";
+      const player = document.getElementById('audioPlayer');
+      player.src = song + '.mp3';
       player.play();
     }
   </script>
+</head>
+<body onload="checkPassword()">
+  <nav>
+    <h2>Study & Anime</h2>
+    <div class="nav-group">
+      <p>Study</p>
+      <button onclick="location.href='https://halle2525.github.io/math.html'">수학 문제집</button>
+      <button onclick="location.href='https://halle2525.github.io/english.html'">영어 문제집</button>
+      <button onclick="location.href='https://halle2525.github.io/science.html'">과학 문제집</button>
+      <button onclick="location.href='https://halle2525.github.io/prac.html'">문법 문제집</button>
+    </div>
+    <div class="nav-group">
+      <p>Back</p>
+      <button onclick="location.href='index.html'">Back to index</button>
+    </div>
+    <div class="nav-group">
+      <p>GitHub</p>
+      <button onclick="location.href='https://github.com/halle2525/halle2525.github.io'">Source Code</button>
+    </div>
+  </nav>
+  <header>
+    <h1>기말고사 예상문제집</h1>
+  </header>
+  <main>
+    <section>
+      <h3>Vocaloid & Anime Songs</h3>
+      <div class="btn-grid">
+        <button onclick="playMusic('DECO27 - モニタリング feat. 初音ミク')">モニタリング</button>
+        <button onclick="playMusic('Miku by Anamanaguchi (Lyrics Video)')">Miku</button>
+        <button onclick="playMusic('ぬぬぬぬぬぬぬぬぬぬぬ...み')">Mimukawa Nice Try</button>
+      </div>
+    </section>
+    <p style="margin-top: 40px; font-size:12px; text-align:center; color:#666;">Made by Yoojoon.</p>
+  </main>
+  <footer>
+    <audio id="audioPlayer" controls></audio>
+  </footer>
 </body>
 </html>
