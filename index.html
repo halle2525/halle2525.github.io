@@ -4,47 +4,57 @@
   <title>8학년 꿀팁대방출 - Google Drive</title>
   <link rel="icon" href="google_drive_new_logo_icon_159136.png" type="image/png">
   <style>
+    /* 전체 배경과 텍스트 */
     body {
-      background-color: white;
-      color: black;
-      font-family: Arial, sans-serif;
-      padding: 25px;
+      margin: 0;
+      background-color: #121212;
+      color: #ffffff;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      padding: 0;
     }
-    .big-button {
-      padding: 20px 40px;
-      font-size: 28px;
-      background-color: green;
-      color: white;
+    /* 제목 */
+    h1 {
+      padding: 20px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+    /* 버튼 공통 스타일 */
+    button {
+      display: block;
+      width: calc(100% - 40px);
+      margin: 8px 20px;
+      padding: 10px 20px;
+      background: none;
       border: none;
-      border-radius: 10px;
+      border-radius: 4px;
+      color: #b3b3b3;
+      text-align: left;
+      font-size: 16px;
       cursor: pointer;
     }
-    .pink {
-      padding: 20px 40px;
-      font-size: 28px;
-      background-color: pink;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
+    button:hover {
+      background-color: rgba(255,255,255,0.1);
+      color: #ffffff;
     }
-    .blue {
-      padding: 20px 40px;
-      font-size: 28px;
-      background-color: blue;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
+    /* 링크 버튼 강조 색상 */
+    a button {
+      color: #1DB954;
     }
-    .oran {
-      padding: 20px 40px;
-      font-size: 28px;
-      background-color: orange;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
+    a button:hover {
+      background-color: rgba(29,185,84,0.2);
+    }
+    /* 소제목(p) 스타일 */
+    p {
+      margin: 16px 20px 4px;
+      font-size: 14px;
+      font-weight: bold;
+      text-transform: uppercase;
+      color: #b3b3b3;
+    }
+    /* 오디오 플레이어 */
+    audio {
+      width: calc(100% - 40px);
+      margin: 20px;
     }
   </style>
   <script>
@@ -61,7 +71,7 @@
   <button class="big-button" onclick="window.location.href='https://halle2525.github.io/math.html'">
     수학 문제집 풀기
   </button>
-  <p> Math </p>
+  <p>Math</p>
   <button class="pink" onclick="window.location.href='https://halle2525.github.io/english.html'">
     영어 문제집 풀기
   </button>
@@ -73,7 +83,7 @@
   <button class="oran" onclick="window.location.href='https://halle2525.github.io/prac.html'">
     문법 문제집 풀기
   </button>
-  <p>Practical English<p/>
+  <p>Practical English</p>
   
   <p>Eminem</p>
   <button onclick="playMusic('Eminem - Rap God (Explicit)')">Rap God</button>
@@ -83,6 +93,7 @@
   <button onclick="playMusic('Eminem - Houdini [Official Music Video]')">Houdini</button>
   <button onclick="playMusic('Eminem - Lose Yourself (Lyrics)')">Lose yourself</button>
   <button onclick="playMusic('Eminem - Love The Way You Lie ft. Rihanna')">Love the way you lie</button>
+  
   <p>Phonk</p>
   <button onclick="playMusic('20 min of songs to boost your Aura (Phonk)-[AudioTrimmer.com]')">AURA Playlist 20 Min</button>
   <button onclick="playMusic('Eternxlkz - SLAY! (Official Audio)')">SLAY!</button>
@@ -126,7 +137,6 @@
   <button onclick="playMusic('ODETARI - KEEP UP (Lyrics)')">KEEP UP</button>
   <button onclick="playMusic('Freebirds best part but its more freebirdyy with bass')">Free Bird</button>
 
-
   <p>Add a new music</p>
   <a href="https://docs.google.com/document/d/1xXKaqEh2C3kPi7EF-NgxAhF5hM3ZkOg1o4pj3KW6ywc/edit?usp=sharing" target="_blank">
     <button>Add something...</button>
@@ -143,9 +153,6 @@
   </a>
 
   <p>Made by Yoojoon.</p>
-
-  
-
 
   <audio id="audioPlayer" controls></audio>
 
