@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gamble to Win! - Home</title>
+  <style>
+    body {
+      background: #111;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 40px;
+    }
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+    .money {
+      font-size: 1.2rem;
+      margin-bottom: 30px;
+    }
+    .btn {
+      display: block;
+      background: #3498db;
+      color: white;
+      padding: 12px;
+      margin: 10px auto;
+      width: 220px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 1.1rem;
+      transition: 0.2s;
+    }
+    .btn:hover {
+      background: #2980b9;
+    }
+  </style>
+</head>
+<body>
+  <h1>💰 Gamble to Win! 💰</h1>
+  <div class="money">Money: $<span id="money">0</span></div>
+
+  <a href="slots.html" class="btn">🎰 Slots</a>
+  <a href="blackjack.html" class="btn">🃏 Blackjack</a>
+
+  <script>
+    let money = parseFloat(localStorage.getItem("money")) || 1000;
+    document.getElementById("money").innerText = money.toLocaleString();
+  </script>
+</body>
+</html>
