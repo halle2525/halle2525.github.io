@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Simple Blackjack (No Suits)</title>
+<style>
+  /* plain, white, minimal */
+  :root { color-scheme: light; }
+  html, body { background:#fff; color:#000; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+  .wrap { max-width: 720px; margin: 24px auto; padding: 16px; }
+  h1 { font-size: 20px; margin: 0 0 12px; font-weight: 700; }
+  .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin: 8px 0; }
+  .label { font-weight: 600; }
+  input[type="number"] { width: 120px; padding: 8px; border: 1px solid #000; background:#fff; color:#000; }
+  button { padding: 8px 14px; border:1px solid #000; background:#fff; color:#000; cursor:pointer; }
+  button[disabled] { opacity: .5; cursor: not-allowed; }
+  .hand { display: flex; gap: 8px; flex-wrap: wrap; padding: 8px 0; min-height: 64px; }
+  .card {
+    width: 44px; height: 60px; border:1px solid #000; display:flex; align-items:center; justify-content:center;
+    background:#fff; color:#000; font-weight:700; user-select:none;
+  }
+  .hidden { color:#000; }
+  .totals { font-weight:600; }
+  .divider { border-top:1px solid #000; margin: 12px 0; }
+  .msg { min-height: 24px; font-weight: 700; }
+  .bank { font-weight: 700; }
+  .small { font-size: 12px; opacity:.8; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Blackjack</h1>
+
+  <div class="row">
+    <div class="bank">Bankroll: $<span id="bankroll">1000</span></div>
+    <div class="small">Deck uses 50 cards (2 random cards removed each shuffle). No suits shown.</div>
+  </div>
+
+  <div class="row">
+    <label class="label" for="bet">Bet:</label>
+    <input id="bet" type="number" min="1" step="1" value="10" />
+    <button id="dealBtn">Deal</button>
+    <button id="hitBtn" disabled>Hit</button>
+    <button id="standBtn" disabled>Stand</button>
+    <button id="newBtn" disabled>New Round</button>
+  </div>
+
+  <div class="divider"></div>
+
+  <div>
+    <div class="label">Dealer</div>
+    <div class="hand" id="dealerHand"></div>
+    <div class="totals">Total: <span id="dealerTotal">-</span></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div>
+    <div class="label">You</div>
+    <div class="hand" id="playerHand"></div>
+    <div class="totals">Total: <span id="playerTotal">-</span></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="msg" id="message"></div>
+  <div class="small">Rules: Player first. Bust &gt; 21 loses. Dealer draws until 17+. Payout 1:1. Push returns bet.</div>
+</div>
+
+<script>
+(function(){
+  // ----- State -----
+  let bankroll = 1000;
+  let deck = [];
+  let discard = [];
+  let player = [];
+  let dealer = [];
+  let betLocked = 0;
+  let roundOver = false;
+  let dealerHoleRevealed = false;
+
+  // ----- UI -----
+  const elBank   = document.getElementById('bankroll');
+  const elBet    = document.getElementById('bet');
+  const dealBtn  = document.getElementById('dealBtn');
+  const hitBtn   = document.getElementById('hitBtn');
+  const standBtn = document.getElementById('standBtn');
+  const newBtn   = document.getElementById('newBtn');
+
+  const dealerHandEl  = document.getElementById('dealerHand');
+  const playerHandEl  = document.getElementById('playerHand');
+  const dealerTotalEl = document.getElementById('dealerTotal');
+  const playerTotalEl = document.getElementById('playerTotal');
+  const msgEl         = document.getElementById('message');
+
+  // ----- Deck (50 cards: start from 52, remove 2 random each shuffle) -----
+  const RANKS = ['A','K','Q','J','10','9','8','7','6','5','4','3','2']; // order won't matter
+  function freshDeck52(){
+    const d = [];
+    for (let s = 0; s < 4; s++) {
+      for (const r of RANKS) d.push({ r }); // no suits/colors shown in UI
+    }
+    return d; // 52
+  }
+  function shuffle(arr){
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+  }
+  function makeDeck50(){
+    let d = freshDeck52();
+    shuffle(d);
+    // remove 2 random cards to get 50
+    d.splice(Math.floor(Math.random()*d.length),1);
+    d.splice(Math.floor(Math.random()*d.length),1);
+    return d;
+  }
+  function ensureDeck(){
+    // New deck every game as requested, but also reshuffle if someone tries to keep playing
+    if (deck.length < 10) {
+      deck = makeDeck50();
+      discard = [];
+    }
+  }
+  function draw(){
+    if (deck.length === 0) ensureDeck();
+    return deck.pop();
+  }
+
+  // ----- Values -----
+  function cardValue(card){ // A as 11, adjust later
+    if (card.r === 'A') return 11;
+    if (card.r === 'K' || card.r === 'Q' || card.r === 'J') return 10;
+    if (card.r === '10') return 10;
+    return parseInt(card.r, 10);
+  }
+  function handValue(hand){
+    let total = 0, aces = 0;
+    for (const c of hand) {
+      total += cardValue(c);
+      if (c.r === 'A') aces++;
+    }
+    while (total > 21 && aces > 0) { total -= 10; aces--; } // A->1 as needed
+    return total;
+  }
+
+  // ----- Rendering -----
+  function renderCard(card, hidden=false){
+    const div = document.createElement('div');
+    div.className = 'card' + (hidden ? ' hidden' : '');
+    div.textContent = hidden ? '?' : card.r;
+    return div;
+  }
+  function renderHands(){
+    // Dealer
+    dealerHandEl.innerHTML = '';
+    if (!dealerHoleRevealed && dealer.length >= 2) {
+      dealerHandEl.appendChild(renderCard(dealer[0], false)); // first open
+      dealerHandEl.appendChild(renderCard(dealer[1], true));  // second hidden
+      for (let i=2;i<dealer.length;i++) dealerHandEl.appendChild(renderCard(dealer[i], false));
+    } else {
+      for (const c of dealer) dealerHandEl.appendChild(renderCard(c, false));
+    }
+    // Player
+    playerHandEl.innerHTML = '';
+    for (const c of player) playerHandEl.appendChild(renderCard(c, false));
+
+    // Totals
+    const pVal = handValue(player);
+    playerTotalEl.textContent = player.length ? pVal : '-';
+    if (!dealerHoleRevealed && dealer.length) {
+      // show only visible part (rough hint) or '-'
+      const visible = dealer.length ? handValue([dealer[0]]) : 0;
+      dealerTotalEl.textContent = dealer.length ? (visible + ' + ?') : '-';
+    } else {
+      dealerTotalEl.textContent = dealer.length ? handValue(dealer) : '-';
+    }
+  }
+  function setMessage(t){ msgEl.textContent = t || ''; }
+
+  // ----- Controls -----
+  function setPhase(phase){
+    // phases: 'betting' | 'player' | 'dealer' | 'done'
+    if (phase === 'betting') {
+      dealBtn.disabled = false;
+      hitBtn.disabled = true;
+      standBtn.disabled = true;
+      newBtn.disabled = true;
+      elBet.disabled = false;
+    } else if (phase === 'player') {
+      dealBtn.disabled = true;
+      hitBtn.disabled = false;
+      standBtn.disabled = false;
+      newBtn.disabled = true;
+      elBet.disabled = true;
+    } else if (phase === 'dealer') {
+      dealBtn.disabled = true;
+      hitBtn.disabled = true;
+      standBtn.disabled = true;
+      newBtn.disabled = true;
+      elBet.disabled = true;
+    } else { // done
+      dealBtn.disabled = true;
+      hitBtn.disabled = true;
+      standBtn.disabled = true;
+      newBtn.disabled = false;
+      elBet.disabled = true;
+    }
+  }
+
+  // ----- Round flow -----
+  function resetTable(){
+    player = [];
+    dealer = [];
+    dealerHoleRevealed = false;
+    roundOver = false;
+    betLocked = 0;
+    setMessage('');
+    renderHands();
+    updateBank();
+  }
+  function updateBank(){ elBank.textContent = String(bankroll); }
+
+  function startRound(){
+    const bet = Math.floor(Number(elBet.value || 0));
+    if (!Number.isFinite(bet) || bet < 1) { setMessage('Enter a valid bet (>= 1).'); return; }
+    if (bet > bankroll) { setMessage('Bet cannot exceed bankroll.'); return; }
+
+    resetTable(); // clear any leftovers but keep bankroll
+    ensureDeck();
+    betLocked = bet;
+
+    // deal 2 each
+    player.push(draw(), draw());
+    dealer.push(draw(), draw());
+
+    setPhase('player');
+    renderHands();
+
+    const pVal = handValue(player);
+    if (pVal === 21) {
+      // we treat blackjack same as 21 (no 3:2); dealer plays to resolve push/win
+      dealerTurn(true);
+    } else {
+      setMessage('Your turn: Hit or Stand.');
+    }
+  }
+
+  function playerHit(){
+    if (roundOver) return;
+    player.push(draw());
+    renderHands();
+    const pVal = handValue(player);
+    if (pVal > 21) {
+      dealerHoleRevealed = true;
+      renderHands();
+      settle('player_bust');
+    }
+  }
+
+  function playerStand(){
+    if (roundOver) return;
+    dealerTurn(false);
+  }
+
+  function dealerTurn(playerBlackjack){
+    setPhase('dealer');
+    dealerHoleRevealed = true;
+    renderHands();
+
+    // Dealer draws to 17+ (stand on all 17s)
+    let dVal = handValue(dealer);
+    while (dVal < 17) {
+      dealer.push(draw());
+      renderHands();
+      dV
