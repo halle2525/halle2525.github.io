@@ -1,95 +1,317 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Slots - Gamble to Win!</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Slots</title>
   <style>
     body {
-      background: #111;
-      color: white;
       font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      color: white;
       text-align: center;
       padding: 20px;
     }
-    h1 { margin-bottom: 10px; }
-    .money { font-size: 1.2rem; margin-bottom: 20px; }
-    .slots {
-      font-size: 2rem;
-      margin: 20px 0;
+    h1 {
+      margin-bottom: 20px;
     }
-    .btn {
-      background: #3498db;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
+    #money {
+      font-size: 1.4rem;
+      margin-bottom: 20px;
+    }
+    #output {
+      margin-top: 30px;
+      font-size: 1.2rem;
+      min-height: 100px;
+    }
+    .slot-container {
+      margin: 20px auto;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+    .slot {
+      font-size: 3rem;
+      background: white;
+      color: black;
+      width: 70px;
+      height: 70px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+    }
+    input[type=number] {
       font-size: 1rem;
+      padding: 10px;
+      width: 150px;
+      border-radius: 8px;
+      border: none;
+      text-align: center;
+      margin-bottom: 10px;
     }
-    .btn:hover { background: #2980b9; }
-    .result { margin-top: 15px; font-size: 1.1rem; }
+    button {
+      font-size: 1.2rem;
+      padding: 12px 30px;
+      border: none;
+      border-radius: 12px;
+      background-color: #e67e22;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:disabled {
+      background-color: #555;
+      cursor: not-allowed;
+    }
+    button:hover:not(:disabled) {
+      background-color: #d35400;
+    }
+    .win-msg {
+      margin-top: 15px;
+      font-weight: bold;
+      color: #00ff88;
+    }
+    .loss-msg {
+      margin-top: 15px;
+      font-weight: bold;
+      color: #ff4444;
+    }
+    .hack-msg {
+      margin-top: 10px;
+      font-weight: bold;
+      color: yellow;
+    }
+    .reset-btn {
+      margin-top: 20px;
+      font-size: 1.1rem;
+      padding: 10px 25px;
+      border-radius: 8px;
+      background-color: #2980b9;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .reset-btn:hover {
+      background-color: #1abc9c;
+    }
   </style>
 </head>
 <body>
-  <h1>🎰 Slots 🎰</h1>
-  <div class="money">Money: $<span id="money">0</span></div>
+  <h1>Slots</h1>
+  <div id="money">Money: $0</div>
+  <input type="number" id="betAmount" min="1" placeholder="Enter your bet" />
+  <br />
+  <button id="spinBtn">Spin</button>
 
-  <div class="slots" id="slots">❔ ❔ ❔</div>
+  <div class="slot-container">
+    <div class="slot" id="slot1" aria-label="Slot 1">?</div>
+    <div class="slot" id="slot2" aria-label="Slot 2">?</div>
+    <div class="slot" id="slot3" aria-label="Slot 3">?</div>
+  </div>
 
-  <input type="number" id="bet" placeholder="Bet Amount" min="1" value="100">
-  <button class="btn" onclick="spin()">Spin</button>
-  <p class="result" id="result"></p>
-  <br>
-  <a href="index.html" style="color:#ccc;">⬅ Back to Home</a>
+  <div id="output"></div>
 
   <script>
-    // Load or set starting money
-    let money = parseFloat(localStorage.getItem("money"));
-    if (!money || money <= 0) money = 1000;
+    let money = parseFloat(localStorage.getItem('money')) || 1000;
+    const moneyDisplay = document.getElementById('money');
+    const betInput = document.getElementById('betAmount');
+    const spinBtn = document.getElementById('spinBtn');
+    const output = document.getElementById('output');
+    const slotElements = [
+      document.getElementById('slot1'),
+      document.getElementById('slot2'),
+      document.getElementById('slot3')
+    ];
 
-    const symbols = ["🍒","🍋","🔔","⭐","💎","7️⃣"];
-    const slotsDiv = document.getElementById("slots");
-    const moneySpan = document.getElementById("money");
-    const resultDiv = document.getElementById("result");
+    const symbols = [
+      {name: 'Duck', emoji: '🦆', chance: 0.39},
+      {name: 'Chocolate', emoji: '🍫', chance: 0.25},
+      {name: 'Bat', emoji: '🦇', chance: 0.14},
+      {name: 'Pistol', emoji: '🔫', chance: 0.09},
+      {name: 'SMG', emoji: '🪓', chance: 0.05}, // Using axe emoji for SMG
+      {name: 'Car', emoji: '🚗', chance: 0.03},
+      {name: 'Atomic', emoji: '☢️', chance: 0.0195},
+      {name: '7', emoji: '7️⃣', chance: 0.0116}
+    ];
 
-    function updateMoney() {
-      moneySpan.innerText = money.toLocaleString();
-      localStorage.setItem("money", money);
+    // Normalize cumulative chance array for robustness
+    const totalChance = symbols.reduce((sum, sym) => sum + sym.chance, 0);
+    const cumulativeChances = [];
+    symbols.reduce((acc, sym) => {
+      acc += sym.chance / totalChance;
+      cumulativeChances.push(acc);
+      return acc;
+    }, 0);
+
+    function getRandomSymbol() {
+      let r = Math.random();
+      for (let i = 0; i < cumulativeChances.length; i++) {
+        if (r < cumulativeChances[i]) return symbols[i];
+      }
+      return symbols[symbols.length -1]; // fallback
     }
 
-    function spin() {
-      let bet = parseFloat(document.getElementById("bet").value);
-      if (isNaN(bet) || bet <= 0) { resultDiv.innerText = "Enter a valid bet."; return; }
-      if (bet > money) { resultDiv.innerText = "Not enough money!"; return; }
-
-      // Take bet
-      money -= bet;
-      updateMoney();
-
-      // Random spin
-      let s1 = symbols[Math.floor(Math.random()*symbols.length)];
-      let s2 = symbols[Math.floor(Math.random()*symbols.length)];
-      let s3 = symbols[Math.floor(Math.random()*symbols.length)];
-      slotsDiv.innerText = `${s1} ${s2} ${s3}`;
-
-      // Win check
-      if (s1 === s2 && s2 === s3) {
-        let win = bet * 5;
-        money += win;
-        updateMoney();
-        resultDiv.innerHTML = `<span style="color:lime;">You Won! +$${win.toLocaleString()}</span>`;
-      } else if (s1 === s2 || s2 === s3 || s1 === s3) {
-        let win = bet * 2;
-        money += win;
-        updateMoney();
-        resultDiv.innerHTML = `<span style="color:yellow;">Small Win! +$${win.toLocaleString()}</span>`;
+    function updateMoney() {
+      moneyDisplay.innerText = `Money: $${money.toFixed(2)}`;
+      localStorage.setItem('money', money);
+      if (money <= 0) {
+        spinBtn.disabled = true;
+        output.innerHTML = `<div class="loss-msg">Game over! You're out of money.</div>
+        <button class="reset-btn" id="resetBtn">Reset Game</button>`;
+        document.getElementById('resetBtn').onclick = resetGame;
       } else {
-        resultDiv.innerHTML = `<span style="color:red;">You Lost -$${bet.toLocaleString()}</span>`;
+        spinBtn.disabled = false;
       }
     }
 
+    function resetGame() {
+      money = 1000;
+      updateMoney();
+      output.innerHTML = '';
+      betInput.value = '';
+      slotElements.forEach(slot => slot.textContent = '?');
+    }
+
+    let spinning = false;
+
+    function disableSpinButton(state) {
+      spinBtn.disabled = state;
+    }
+
+    function checkBet() {
+      const bet = parseFloat(betInput.value);
+      if (!Number.isFinite(bet) || bet <= 0) {
+        output.innerHTML = '<span class="loss-msg">Please enter a valid bet amount greater than 0.</span>';
+        return null;
+      }
+      if (bet > money) {
+        output.innerHTML = '<span class="loss-msg">Not enough money for that bet.</span>';
+        return null;
+      }
+      return bet;
+    }
+
+    // Winning combos and multipliers as before...
+
+    function checkWin(combo) {
+      const counts = {};
+      combo.forEach(sym => counts[sym.name] = (counts[sym.name] || 0) +1);
+
+      // Helper:
+      const has = (name, count) => (counts[name] || 0) === count;
+
+      // 1. Pinata: duck + chocolate + bat (1 each)
+      if (counts['Duck'] >=1 && counts['Chocolate'] >=1 && counts['Bat'] >=1 && combo.length === 3) return {mult:2, name:'Pinata'};
+      // 2. Flock O Ducks: 3 ducks
+      if (has('Duck', 3)) return {mult:3, name:'Flock O Ducks'};
+      // 3. Duck Hunting: 2 ducks + 1 pistol
+      if (has('Pistol',1) && has('Duck',2)) return {mult:3, name:'Duck Hunting'};
+      // 4. Serious Duck Hunting: 1 smg + 2 ducks
+      if (has('SMG',1) && has('Duck',2)) return {mult:4, name:'Serious Duck Hunting'};
+      // 5. Sweet Tooth: 3 chocolate
+      if (has('Chocolate',3)) return {mult:4, name:'Sweet Tooth'};
+      // 6. Road Kill: 2 ducks + 1 car
+      if (has('Car',1) && has('Duck',2)) return {mult:6, name:'Road Kill'};
+      // 7. Meltdown 1: 2 chocolate + 1 atomic
+      if (has('Atomic',1) && has('Chocolate',2)) return {mult:7, name:'Meltdown 1'};
+      // 8. Meltdown 2: 2 atomic + 1 chocolate
+      if (has('Atomic',2) && has('Chocolate',1)) return {mult:7, name:'Meltdown 2'};
+      // 9. Vandalism: 2 car + 1 bat
+      if (has('Car',2) && has('Bat',1)) return {mult:8, name:'Vandalism'};
+      // 10. Vandalism 2: 1 car + 2 bat
+      if (has('Car',1) && has('Bat',2)) return {mult:8, name:'Vandalism 2'};
+      // 11. Homerun: 3 bats
+      if (has('Bat',3)) return {mult:8, name:'Homerun'};
+      // 12. Gunfight: 2 smg + 1 pistol
+      if (has('SMG',2) && has('Pistol',1)) return {mult:10, name:'Gunfight'};
+      // 13. Gunfight 2: 1 smg + 2 pistol
+      if (has('SMG',1) && has('Pistol',2)) return {mult:10, name:'Gunfight 2'};
+      // 14. Driveby: 1 car + 2 pistol or smg
+      if (has('Car',1) && ((counts['Pistol'] === 2) || (counts['SMG'] === 2))) return {mult:20, name:'Driveby'};
+      // 15. Firing Range: 3 pistol
+      if (has('Pistol',3)) return {mult:40, name:'Firing Range'};
+      // 16. Overkill: 3 smg
+      if (has('SMG',3)) return {mult:200, name:'Overkill'};
+      // 17. Pileup: 3 cars
+      if (has('Car',3)) return {mult:1000, name:'Pileup'};
+      // 18. Radioactive: 3 atomic
+      if (has('Atomic',3)) return {mult:2000, name:'Radioactive'};
+      // 19. Jackpot: 3 sevens
+      if (has('7',3)) return {mult:10000, name:'Jackpot'};
+
+      return null; // no win
+    }
+
+    async function spin() {
+      if (spinning) return;
+      const bet = checkBet();
+      if (!bet) return;
+
+      spinning = true;
+      disableSpinButton(true);
+      output.innerHTML = '';
+
+      money -= bet;
+      updateMoney();
+
+      // Show spinning animation with "?" for each slot
+      for (let i = 0; i < 3; i++) {
+        slotElements[i].textContent = '?';
+      }
+
+      // Spin animation loop for 1.5 seconds (roughly 15 changes)
+      const spinDuration = 1500;
+      const spinInterval = 100;
+      let elapsed = 0;
+
+      while (elapsed < spinDuration) {
+        for (let i = 0; i < 3; i++) {
+          const sym = getRandomSymbol();
+          slotElements[i].textContent = sym.emoji;
+        }
+        await new Promise(r => setTimeout(r, spinInterval));
+        elapsed += spinInterval;
+      }
+
+      // Final spin result
+      const finalCombo = [getRandomSymbol(), getRandomSymbol(), getRandomSymbol()];
+      for (let i = 0; i < 3; i++) {
+        slotElements[i].textContent = finalCombo[i].emoji;
+      }
+
+      // Check win combos
+      const win = checkWin(finalCombo);
+
+      if (win) {
+        const winAmount = bet * win.mult;
+        money += winAmount;
+        output.innerHTML = `<div class="win-msg">You got <strong>${win.name}</strong>! You win $${winAmount.toFixed(2)}!</div>`;
+      } else {
+        // Lost - check hacking refund chance
+        const lostBet = bet;
+        const hackingDone = localStorage.getItem('hackingDone') === 'true';
+
+        if (hackingDone && Math.random() < 0.05) {
+          money += lostBet;
+          output.innerHTML = `<div class="hack-msg">Lucky Hack! You got your bet back (5% chance)</div>`;
+        } else {
+          output.innerHTML = `<div class="loss-msg">You lost $${bet.toFixed(2)}.</div>`;
+        }
+      }
+
+      updateMoney();
+      disableSpinButton(false);
+      spinning = false;
+    }
+
+    spinBtn.addEventListener('click', spin);
+
+    // Initialize UI on load
     updateMoney();
+    slotElements.forEach(slot => slot.textContent = '?');
   </script>
 </body>
 </html>
