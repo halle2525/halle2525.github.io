@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Mine Game + Predictor</title>
+  <style>
+    body { font-family: Arial, sans-serif; display: flex; justify-content: center; gap: 50px; padding: 20px; }
+    .container { text-align: center; }
+    .grid { display: grid; grid-template-columns: repeat(5, 60px); gap: 5px; margin-top: 20px; }
+    .cell { width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; border-radius: 5px; cursor: pointer; }
+    .mine { background-color: black !important; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Mine Game</h2>
+  <div class="grid" id="gameGrid"></div>
+  <p id="status">Click a square to find the mine.</p>
+  <button onclick="resetGame()">New Round</button>
+</div>
+
+<div class="container">
+  <h2>Mine Predictor</h2>
+  <div class="grid" id="predictorGrid"></div>
+</div>
+
+<script>
+const totalCells = 25;
+let mineData = []; // store indices of mines
+let currentMine = Math.floor(Math.random() * totalCells);
+
+const gameGrid = document.getElementById('gameGrid');
+const predictorGrid = document.getElementById('predictorGrid');
+const status = document.getElementById('status');
+
+// Initialize grids
+function initGrids() {
+  gameGrid.innerHTML = '';
+  predictorGrid.innerHTML = '';
+  for (let i = 0; i < totalCells; i++) {
+    // Game cells
+    const gameCell = document.createElement('div');
+    gameCell.className = 'cell';
+    gameCell.dataset.index = i;
+    gameCell.addEventListener('click', checkMine);
+    gameGrid.appendChild(gameCell);
+
+    // Predictor cells
+    const predCell = document.createElement('div');
+    predCell.className = 'cell';
+    predictorGrid.appendChild(predCell);
+  }
+  updatePredictor();
+}
+
+// Check clicked square
+function checkMine(e) {
+  const index = parseInt(e.target.dataset.index);
+  if (index === currentMine) {
+    e.target.classList.add('mine');
+    status.textContent = "You found the mine!";
+  } else {
+    e.target.style.backgroundColor = 'gray';
+    status.textContent = "No mine here.";
+  }
+  mineData.push(currentMine);
+  updatePredictor();
+}
+
+// Update predictor grid
+function updatePredictor() {
+  const counts = Array(totalCells).fill(0);
+  mineData.forEach(i => counts[i]++);
+  const totalRounds = mineData.length;
+
+  for (let i = 0; i < totalCells; i++) {
+    const risk = totalRounds ? ((totalRounds - counts[i]) / totalRounds * 100).toFixed(1) : 100;
+    const red = Math.min(risk, 100);
+    const blue = 255 - Math.min(risk*2.55, 255);
+    predictorGrid.children[i].textContent = risk + '%';
+    predictorGrid.children[i].style.backgroundColor = `rgb(${red},0,${blue})`;
+  }
+}
+
+// Start new round
+function resetGame() {
+  currentMine = Math.floor(Math.random() * totalCells);
+  status.textContent = "Click a square to find the mine.";
+  initGrids();
+}
+
+// Initial load
+initGrids();
+</script>
+
+</body>
+</html>
