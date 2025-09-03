@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bass Bouncing Circle</title>
+  <style>
+    body { display: flex; justify-content: center; align-items: center; height: 100vh; background: #111; }
+    canvas { background: #111; }
+  </style>
+</head>
+<body>
+<audio id="music" src="your_song.mp3" controls></audio>
+<canvas id="canvas" width="400" height="400"></canvas>
+
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const audio = document.getElementById('music');
+
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+const analyser = audioCtx.createAnalyser();
+const source = audioCtx.createMediaElementSource(audio);
+source.connect(analyser);
+analyser.connect(audioCtx.destination);
+analyser.fftSize = 256;
+
+const bufferLength = analyser.frequencyBinCount;
+const dataArray = new Uint8Array(bufferLength);
+
+function draw() {
+  requestAnimationFrame(draw);
+  analyser.getByteFrequencyData(dataArray);
+
+  // Detect bass (low frequencies)
+  let bass = 0;
+  for (let i = 0; i < bufferLength / 4; i++) { // first quarter = bass
+    bass += dataArray[i];
+  }
+  bass = bass / (bufferLength / 4);
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Draw bouncing circle
+  const radius = 50 + bass; // base radius + bass
+  ctx.beginPath();
+  ctx.arc(canvas.width/2, canvas.height/2, radius, 0, Math.PI*2);
+  ctx.fillStyle = 'red';
+  ctx.fill();
+  ctx.closePath();
+}
+
+audio.addEventListener('play', () => {
+  audioCtx.resume(); // needed for browser autoplay policies
+  draw();
+});
+</script>
+</body>
+</html>
