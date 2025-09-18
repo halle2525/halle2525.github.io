@@ -25,8 +25,7 @@
     header img {
       position: absolute;
       top: 50%;
-      left: 20px;      /* move to the left side */
-      height: 120px;    /* bigger size */
+      left: 20px;      /* move to the left side */  /* bigger size */
       width: auto;      /* keep aspect ratio */
       transform: translateY(-50%);
       z-index: 1000;
@@ -61,9 +60,8 @@
     
       if (userKey !== secretKey) {
         alert("Wrong key! You are blocked.");
-        // Redirect to another site or show blocked message
-        document.body.innerHTML = "<h1 style='text-align:center; margin-top:50px;'>Access Denied</h1>";
-        // Or redirect: window.location.href = "https://example.com";
+        window.location.href = "https://example.com"; // redirect to another site
+      }
       }
     })();
   </script>
