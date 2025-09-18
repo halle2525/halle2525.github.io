@@ -9,7 +9,14 @@
     /* Reset 기본 스타일 */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { display: grid; grid-template-rows: auto 1fr auto; grid-template-columns: 240px 1fr; height: 100vh; font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #ffffff; color: #000000; }
-    
+    header img {
+      height: 100px; /* bigger height */
+      width: auto;   /* keeps aspect ratio */
+      position: absolute;
+      top: 50%;
+      right: 30px;
+      transform: translateY(-50%);
+    }
     /* 사이드바 */
     nav { grid-row: 1 / span 3; grid-column: 1 / 2; background-color: #f0f0f0; padding: 20px; display: flex; flex-direction: column; }
     nav h2 { font-size: 1.4rem; margin-bottom: 1.5rem; color: #1DB954; }
