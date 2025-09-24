@@ -47,21 +47,18 @@
   </style>
 
   <script>
-    document.addEventListener('keydown', e => { if (e.code === 'Space') window.location.href = 'https://halle2525.github.io/science.html'; });
-    function playMusic(song) {
-      const player = document.getElementById('audioPlayer');
-      player.src = song + '.mp3';
-      player.play();
-    }
 
-    (function() {
-      const secretKey = "yjyj0321"; // your secret key
-      const userKey = prompt("Enter the secret key to access this site:");
+    document.addEventListener('keydown', e => { if (e.code === 'Space') window.location.href = 'https://halle2525.github.io/science.html'; }); function playMusic(song) { const player = document.getElementById('audioPlayer'); player.src = song + '.mp3'; player.play(); }
     
-      if (userKey !== secretKey) {
-        alert("Wrong key! You are blocked.");
-        window.location.href = "https://example.com"; // redirect to another site
-      }
+    (function() {
+  const secretKey = "yjyj0321"; // your secret key
+  const userKey = prompt("Enter the secret key to access this site:");
+  
+  if (userKey !== secretKey) {
+    alert("Wrong key! You are blocked.");
+    window.location.href = "https://example.com"; // redirect to another site
+  }
+})();
       }
     })();
   </script>
